@@ -332,11 +332,47 @@ class ParseRequirementsTest(base.BaseTestCase):
 
     def test_parse_requirements_with_git_egg_url(self):
         with open(self.tmp_file, 'w') as fh:
-            fh.write("-e git://foo.com/zipball#egg=bar")
+            fh.write("git://foo.com/zipball#egg=bar")
         self.assertEqual(['bar'],
                          packaging.parse_requirements([self.tmp_file]))
 
     def test_parse_requirements_with_versioned_git_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("git://foo.com/zipball#egg=bar-1.2.4")
+        self.assertEqual(['bar>=1.2.4'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_ssh_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("git+ssh://foo.com/zipball#egg=bar")
+        self.assertEqual(['bar'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_versioned_ssh_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("git+ssh://foo.com/zipball#egg=bar-1.2.4")
+        self.assertEqual(['bar>=1.2.4'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_git_https_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("git+https://foo.com/zipball#egg=bar")
+        self.assertEqual(['bar'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_versioned_git_https_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("git+https://foo.com/zipball#egg=bar-1.2.4")
+        self.assertEqual(['bar>=1.2.4'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_editable_git_egg_url(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("-e git://foo.com/zipball#egg=bar")
+        self.assertEqual(['bar'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_editable_versioned_git_egg_url(self):
         with open(self.tmp_file, 'w') as fh:
             fh.write("-e git://foo.com/zipball#egg=bar-1.2.4")
         self.assertEqual(['bar>=1.2.4'],
