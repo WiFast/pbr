@@ -93,7 +93,7 @@ def parse_requirements(requirements_files=None, strip_markers=False):
         # nova-1.2.3 becomes nova>=1.2.3
         return re.sub(r'([\w.]+)-([\w.-]+)',
                       r'\1>=\2',
-                      match.group(1))
+                      match.group(2))
 
     requirements = []
     for line in get_reqs_from_files(requirements_files):
@@ -120,12 +120,12 @@ def parse_requirements(requirements_files=None, strip_markers=False):
         # -e git://github.com/openstack/nova/master#egg=nova
         # -e git://github.com/openstack/nova/master#egg=nova-1.2.3
         if re.match(r'\s*-e\s+', line):
-            line = re.sub(r'\s*-e\s+.*#egg=(.*)$', egg_fragment, line)
+            line = re.sub(r'\s*-e\s+.*#(.*&)?egg=([^&]*).*$', egg_fragment, line)
         # such as:
         # http://github.com/openstack/nova/zipball/master#egg=nova
         # http://github.com/openstack/nova/zipball/master#egg=nova-1.2.3
         elif re.match(r'\s*https?:', line):
-            line = re.sub(r'\s*https?:.*#egg=(.*)$', egg_fragment, line)
+            line = re.sub(r'\s*https?:.*#(.*&)?egg=([^&]*).*$', egg_fragment, line)
         # -f lines are for index locations, and don't get used here
         elif re.match(r'\s*-f\s+', line):
             line = None

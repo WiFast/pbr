@@ -341,6 +341,20 @@ class ParseRequirementsTest(base.BaseTestCase):
         self.assertEqual(['bar>=1.2.4'],
                          packaging.parse_requirements([self.tmp_file]))
 
+    def test_parse_requirements_with_git_egg_url_subdir(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("-e git://foo.com/zipball#egg=foo&subdirectory=foo\n")
+            fh.write("-e git://foo.com/zipball#subdirectory=bar&egg=bar")
+        self.assertEqual(['foo', 'bar'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_versioned_git_egg_url_subdir(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("-e git://foo.com/zipball#egg=foo-1.3.6&subdirectory=foo\n")
+            fh.write("-e git://foo.com/zipball#subdirectory=bar&egg=bar-1.2.4")
+        self.assertEqual(['foo>=1.3.6', 'bar>=1.2.4'],
+                         packaging.parse_requirements([self.tmp_file]))
+
     def test_parse_requirements_with_http_egg_url(self):
         with open(self.tmp_file, 'w') as fh:
             fh.write("https://foo.com/zipball#egg=bar")
@@ -352,6 +366,21 @@ class ParseRequirementsTest(base.BaseTestCase):
             fh.write("https://foo.com/zipball#egg=bar-4.2.1")
         self.assertEqual(['bar>=4.2.1'],
                          packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_https_egg_url_subdir(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("-e https://foo.com/zipball#egg=foo&subdirectory=foo\n")
+            fh.write("-e https://foo.com/zipball#subdirectory=bar&egg=bar")
+        self.assertEqual(['foo', 'bar'],
+                         packaging.parse_requirements([self.tmp_file]))
+
+    def test_parse_requirements_with_versioned_https_egg_url_subdir(self):
+        with open(self.tmp_file, 'w') as fh:
+            fh.write("-e https://foo.com/zipball#egg=foo-1.3.6&subdirectory=foo\n")
+            fh.write("-e https://foo.com/zipball#subdirectory=bar&egg=bar-1.2.4")
+        self.assertEqual(['foo>=1.3.6', 'bar>=1.2.4'],
+                         packaging.parse_requirements([self.tmp_file]))
+
 
     def test_parse_requirements_removes_index_lines(self):
         with open(self.tmp_file, 'w') as fh:
